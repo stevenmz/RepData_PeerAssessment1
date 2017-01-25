@@ -19,6 +19,7 @@ Later we will need to manipulate the date column to complete the plots required.
 
 
 ## What is mean total number of steps taken per day?
+### Part 1
 First, we will make a histogram of the number of steps taken per day. To do this, first group by the date column and compute the sum of the steps for each date. The dplyr package will help us with this.
 ```{r}
 library("dplyr")
@@ -26,6 +27,7 @@ countSteps = activity %>% group_by(date) %>% summarise(sumSteps=sum(steps))
 hist(countSteps$sumSteps, col="Blue", main="Histogram of Average Step Count", xlab="Average # of Steps per Day" )
 ```
 
+### Part 2: 
 Now lets compute the mean and median number of steps taken per day.
 ```{r}
 meanSteps = activity %>% group_by(date) %>% summarise(avg=mean(steps,na.rm = TRUE))
@@ -36,7 +38,8 @@ print(medianSteps)
 ```
 
 ## What is the average daily activity pattern?
-Lets visualize the avergae number of steps taken per 5-minute interval.
+### Part 1: 
+Lets visualize the average number of steps taken per 5-minute interval.
 ```{r}
 avg5min = activity %>% group_by(interval) %>% summarise(avg=mean(steps,na.rm = TRUE))
 plot(x=avg5min$interval, 
@@ -48,6 +51,7 @@ plot(x=avg5min$interval,
 
 Looks like the most steps are taken mid-morning.
 
+### Part 2: 
 Lets now find the maximum number of average steps
 ```{r}
 maxAvgSteps = max(avg5min$avg)
@@ -59,6 +63,7 @@ The maximum average number of steps taken is: `r maxAvgSteps`.
 The interval containing the maximum average number of steps is: `r maxInterval`.
 
 ## Imputing missing values
+### Part 1: 
 Not every day-interval has a number of steps reported. We can find out how many by using this code:
 
 ```{r}
@@ -67,6 +72,7 @@ numNoStepsReported = length(activity$interval[is.na(activity$steps)])
 
 We see there are `r numNoStepsReported` number of such cases.
 
+### Part 2 and 3: 
 To fill these NA values in, we can reuse our avg5min variable to subsititute in the mean for missing values creating a new dataset:
 ```{r}
 imputed = activity %>% 
@@ -75,6 +81,7 @@ imputed = activity %>%
   select(steps,date,interval)
 ```
 
+### Part 4: 
 We can now produce a histogram that includes the imputed values:
 ```{r}
 countStepsImputed = imputed %>% group_by(date) %>% summarise(sumSteps=sum(steps))
@@ -96,6 +103,7 @@ We see generally that the average number of steps has increased since imputing v
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
+### Part 1: 
 Lets first create a new column to hold the weekday/weekend values by using the POSIXlt class to extract the weekday number:
 ```{r}
 imputed$date = as.POSIXlt(imputed$date)
@@ -104,6 +112,7 @@ imputed$daytype = factor(imputed$daytype )
 head(imputed)
 ```
 
+### Part 2: 
 We can now visualize differences in walking during the week and on the weekend.
 ```{r}
 library("ggplot2")
@@ -112,4 +121,5 @@ imputed$date = factor(imputed$date)
 avgStepsPerIntervalPerDayType = imputed %>% group_by(interval,daytype) %>% summarise(avg=mean(steps))
 qplot(data=avgStepsPerIntervalPerDayType,x = interval, y=avg, facets=.~daytype, geom = "line", ylab="Average number of steps")
 ```
+
 

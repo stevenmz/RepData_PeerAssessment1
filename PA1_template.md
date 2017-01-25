@@ -15,6 +15,7 @@ Later we will need to manipulate the date column to complete the plots required.
 
 
 ## What is mean total number of steps taken per day?
+### Part 1
 First, we will make a histogram of the number of steps taken per day. To do this, first group by the date column and compute the sum of the steps for each date. The dplyr package will help us with this.
 
 ```r
@@ -45,6 +46,7 @@ hist(countSteps$sumSteps, col="Blue", main="Histogram of Average Step Count", xl
 
 ![](PA1_template_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
 
+### Part 2: 
 Now lets compute the mean and median number of steps taken per day.
 
 ```r
@@ -93,7 +95,8 @@ print(medianSteps)
 ```
 
 ## What is the average daily activity pattern?
-Lets visualize the avergae number of steps taken per 5-minute interval.
+### Part 1: 
+Lets visualize the average number of steps taken per 5-minute interval.
 
 ```r
 avg5min = activity %>% group_by(interval) %>% summarise(avg=mean(steps,na.rm = TRUE))
@@ -108,6 +111,7 @@ plot(x=avg5min$interval,
 
 Looks like the most steps are taken mid-morning.
 
+### Part 2: 
 Lets now find the maximum number of average steps
 
 ```r
@@ -120,6 +124,7 @@ The maximum average number of steps taken is: 206.1698113.
 The interval containing the maximum average number of steps is: 835.
 
 ## Imputing missing values
+### Part 1: 
 Not every day-interval has a number of steps reported. We can find out how many by using this code:
 
 
@@ -129,6 +134,7 @@ numNoStepsReported = length(activity$interval[is.na(activity$steps)])
 
 We see there are 2304 number of such cases.
 
+### Part 2 and 3: 
 To fill these NA values in, we can reuse our avg5min variable to subsititute in the mean for missing values creating a new dataset:
 
 ```r
@@ -138,6 +144,7 @@ imputed = activity %>%
   select(steps,date,interval)
 ```
 
+### Part 4: 
 We can now produce a histogram that includes the imputed values:
 
 ```r
@@ -190,6 +197,7 @@ We see generally that the average number of steps has increased since imputing v
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
+### Part 1: 
 Lets first create a new column to hold the weekday/weekend values by using the POSIXlt class to extract the weekday number:
 
 ```r
@@ -209,6 +217,7 @@ head(imputed)
 ## 6 2.0943396 2012-10-01       25 weekday
 ```
 
+### Part 2: 
 We can now visualize differences in walking during the week and on the weekend.
 
 ```r
@@ -220,4 +229,5 @@ qplot(data=avgStepsPerIntervalPerDayType,x = interval, y=avg, facets=.~daytype, 
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
+
 
